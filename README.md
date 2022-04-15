@@ -1,5 +1,5 @@
 # AIMA Vacuum cleaner
----------+---------+---------+---------+---------+---------+---------+---------+
+
 This `Python` code simulates a vacuum cleaner in a grid-shaped world and uses
 search algorithms to explore the world and clean it. This code was written in
 the context of an AI course.
