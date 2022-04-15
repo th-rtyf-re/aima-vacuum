@@ -583,6 +583,9 @@ def random_simulation(shape, density, dirtiness, delay=1e-9, verbose=True):
 	- shape : pair of int. Shape of the world.
 	- density : float between 0 and 1. Density of blocks.
 	- dirtiness : float between 0 and 1. Density of dirt.
+	- delay : None, or nonnegative float. Minimum time, in seconds, that
+	any displayed world state stays on screen.
+	- verbose : bool. If `verbose`, then display log messages in the UI.
 	"""
 	ui = UI(delay, verbose)
 	
