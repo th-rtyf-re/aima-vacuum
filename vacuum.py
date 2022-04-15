@@ -534,6 +534,8 @@ class SingleVacuumAI():
 		heuristic. We only travel on known squares. Since the heuristic is
 		admissible, we are guaranteed to get the optimal solution.
 		
+		We represent priority queues by heaps, using the `heapq` library.
+		
 		Parameters:
 		- from_pos, to_pos : pairs of int. Start and end squares.
 		
