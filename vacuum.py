@@ -5,7 +5,7 @@ from heapq import *
 
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patches
+from matplotlib.patches import Patch
 from matplotlib.colors import from_levels_and_colors
 
 # Remove MatPlotLib toolbar
@@ -43,7 +43,8 @@ class UI():
 		
 		Parameters:
 		- delay : None, or nonnegative float. Minimum time, in seconds, that
-		any displayed matrix stays on screen.
+		any displayed matrix stays on screen. If not positive, then wait for
+		a keyboard input after every update.
 		- verbose : bool. If `verbose`, then display log messages in the UI.
 		"""
 		self._delay = delay
@@ -71,9 +72,11 @@ class UI():
 		
 		# Create text elements
 		text_table = ax[1].table(cellText=[" ", " "], loc="bottom", cellLoc="left", edges="open")
-		self.vacuum_position_text = text_table[0, 0].get_text()
+		self.vacuum_position_text = type("dummy_log", (object,), dict(set_text=lambda x: None))
 		self.log_text = type("dummy_log", (object,), dict(set_text=lambda x: None))
 		if verbose:
+			text_table[0, 0].set_height(0.1)
+			self.vacuum_position_text = text_table[0, 0].get_text()
 			self.log_text = text_table[1, 0].get_text()
 	
 	def display(self, m, plot=0, overlay=None):
@@ -105,8 +108,12 @@ class UI():
 		elif plot == 1:
 			self.ai_artist.set_data(data)
 		
-		if self._delay:
+		if self._delay > 0:
 			plt.pause(self._delay)
+		else:
+			plt.draw()
+			plt.waitforbuttonpress()
+		
 		return data
 	
 	def update_vacuum_position(self, pos):
@@ -157,12 +164,12 @@ class VacuumWorld():
 		border of blocks.
 		- ui : UI object. The UI interface.
 		"""
+		self.ui = ui
+		self.vacuums = []
+		
 		self.grid = np.full((shape[0] + 2, shape[1] + 2), constants["block"]["id"], dtype=int)
 		self._inner_grid = self.grid[1:-1, 1:-1]
 		self.reset()
-		
-		self.vacuums = []
-		self.ui = ui
 	
 	def get_true_shape(self):
 		"""
@@ -171,6 +178,12 @@ class VacuumWorld():
 		"""
 		return self.grid.shape
 	
+	def display(self):
+		"""
+		Display current world grid in the UI.
+		"""
+		self.ui.display(self.grid, plot=0, overlay=(self.vacuums, constants["vacuum"]["id"]))
+	
 	#### World creation methods
 	
 	def reset(self):
@@ -178,6 +191,7 @@ class VacuumWorld():
 		Clear the world.
 		"""
 		self._inner_grid.fill(constants["air"]["id"])
+		self.display()
 	
 	def gen_bernoulli(self, p, element):
 		"""
@@ -192,6 +206,7 @@ class VacuumWorld():
 		rng = np.random.default_rng()
 		blocks = rng.binomial(1, p, size=self._inner_grid.shape)
 		self._inner_grid[blocks == 1] = constants[element]["id"]
+		self.display()
 	
 	def gen_constant(self, n, element):
 		"""
@@ -206,6 +221,7 @@ class VacuumWorld():
 		flat_idx = rng.choice(np.arange(self._inner_grid.size), size=n, replace=False)
 		idx = np.unravel_index(flat_idx, self._inner_grid.shape)
 		self._inner_grid[idx] = constants[element]["id"]
+		self.display()
 	
 	def set_elements(self, positions, element):
 		"""
@@ -217,6 +233,7 @@ class VacuumWorld():
 		"""
 		for xy in positions:
 			self.grid[xy] = constants[element]["id"]
+		self.display()
 	
 	def add_vacuums(self, n):
 		"""
@@ -233,6 +250,7 @@ class VacuumWorld():
 		available = np.nonzero(np.logical_or(self.grid == constants["air"]["id"], self.grid == constants["dirt"]["id"]))
 		idx = rng.choice(np.arange(available[0].size), size=n, replace=False)
 		self.vacuums = list(zip(available[0][idx], available[1][idx]))
+		self.display()
 		return self.vacuums
 	
 	#### Vacuum methods
@@ -289,7 +307,7 @@ class VacuumWorld():
 			return False
 		else:
 			self.vacuums[i] = (x1, y1)
-			self.ui.display(self.grid, plot=0, overlay=(self.vacuums, constants["vacuum"]["id"]))
+			self.display()
 			return True
 
 
@@ -373,8 +391,9 @@ class SingleVacuumAI():
 		self.space[self.pos] = constants["air"]["id"]
 		self._update_accessible(self.pos)
 		
-		self.ui = ui
 		self._space_overlaid = None
+		self.ui = ui
+		self.ui.display(self.space, plot=1)
 	
 	def reset(self):
 		"""
@@ -585,8 +604,9 @@ def random_simulation(shape, density, dirtiness, delay=1e-9, verbose=True):
 	- shape : pair of int. Shape of the world.
 	- density : float between 0 and 1. Density of blocks.
 	- dirtiness : float between 0 and 1. Density of dirt.
-	- delay : None, or nonnegative float. Minimum time, in seconds, that
-	any displayed world state stays on screen.
+	- delay : None, or nonnegative float. Minimum time, in seconds, that any
+	displayed world state stays on screen. If not positive, then wait for a
+	keyboard input after every update.
 	- verbose : bool. If `verbose`, then display log messages in the UI.
 	"""
 	ui = UI(delay, verbose)
@@ -603,5 +623,5 @@ def random_simulation(shape, density, dirtiness, delay=1e-9, verbose=True):
 	input()
 
 if __name__ == "__main__":
-	#random_simulation((10, 10), .3, .5, delay=.5)
-	random_simulation((70, 70), .35, .5)
+	random_simulation((10, 10), .3, .5, delay=-1)
+	#random_simulation((70, 70), .35, .5)
