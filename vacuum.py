@@ -51,7 +51,7 @@ class UI():
 		sorted_constants = sorted(constants.items(), key=lambda x: x[1]["id"])
 		
 		# Draw figure
-		fig = plt.figure()
+		fig = plt.figure("Vacuum world & AI")
 		patches = [Patch(color=v["color"], label=k) for k, v in sorted_constants]
 		fig.legend(handles=patches, loc="center", bbox_to_anchor=(0.5, 0.1), ncol=4)
 		
@@ -623,5 +623,5 @@ def random_simulation(shape, density, dirtiness, delay=1e-9, verbose=True):
 	input()
 
 if __name__ == "__main__":
-	random_simulation((10, 10), .3, .5, delay=-1)
-	#random_simulation((70, 70), .35, .5)
+	#random_simulation((10, 10), .3, .5, delay=-1)
+	random_simulation((70, 70), .35, .5)
