@@ -361,8 +361,7 @@ class SingleVacuumAI():
 	0th vacuum cleaner.
 	
 	Attributes:
-	- world : VacuumWorld object. The World where the vacuum exists.
-	`SingleVacuumAI` only has access to the vacuum cleaner methods of `world`.
+	- vacuum : Vacuum object. The vacuum cleaner to be controlled.
 	- space : NumPy ndarray. A grid of air, block, unknown, and inaccessible
 	squares that represents the object's current knowledge.
 	- start : pair of int. The starting position of the vacuum cleaner.
