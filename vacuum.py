@@ -12,14 +12,14 @@ from matplotlib.colors import from_levels_and_colors
 matplotlib.rcParams['toolbar'] = 'None'
 
 constants = {
-	"air":			{"id": 0, "color": "#ffffff"},
-	"block":		{"id": 1, "color": "#221022"},
-	"dirt":			{"id": 2, "color": "#b18667"},
-	"vacuum":		{"id": 3, "color": "#c00000"},
-	"unknown":		{"id": 4, "color": "#a4dded"},
-	"inaccessible":	{"id": 5, "color": "#014f63"},
-	"DFS":			{"id": 6, "color": "#ffb5b6"},
-	"A*":			{"id": 7, "color": "#ff5556"}
+	"air":          {"id": 0, "color": "#ffffff"},
+	"block":        {"id": 1, "color": "#221022"},
+	"dirt":         {"id": 2, "color": "#b18667"},
+	"vacuum":       {"id": 3, "color": "#c00000"},
+	"unknown":      {"id": 4, "color": "#a4dded"},
+	"inaccessible": {"id": 5, "color": "#014f63"},
+	"DFS":          {"id": 6, "color": "#ffb5b6"},
+	"A*":           {"id": 7, "color": "#ff5556"}
 }
 
 
