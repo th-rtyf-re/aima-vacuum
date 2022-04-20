@@ -357,8 +357,7 @@ class Vacuum():
 class SingleVacuumAI():
 	"""
 	Class that controls a vacuum cleaner in a world of air, blocks, and dirt.
-	The vacuum cleaner belongs to a VacuumWorld, and we assume that it is the
-	0th vacuum cleaner.
+	The vacuum cleaner belongs to a VacuumWorld.
 	
 	Attributes:
 	- vacuum : Vacuum object. The vacuum cleaner to be controlled.
